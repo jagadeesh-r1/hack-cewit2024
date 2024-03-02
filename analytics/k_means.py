@@ -20,6 +20,13 @@ end_date = max(dataset['order_date']) + dt.timedelta(days=1)
 def create_rfm(user_selection, dataset):
     """Creates and returns the RFM dataframe based on the user selection column."""
     dataset['customer_id'] = dataset['customer_id'].astype('category')
+    dataset['state'] = dataset['state'].astype('category')
+    dataset['city'] = dataset['city'].astype('category')
+    dataset['segment'] = dataset['segment'].astype('category')
+    dataset['ship_mode'] = dataset['ship_mode'].astype('category')
+    dataset['category'] = dataset['category'].astype('category')
+    dataset['sub_category'] = dataset['sub_category'].astype('category')
+    
     if user_selection == 'customer_id':
 
         dataset_rfm = dataset.groupby(user_selection).agg(

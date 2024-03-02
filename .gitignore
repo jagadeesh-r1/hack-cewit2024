@@ -1,2 +1,6 @@
 dataset/
 venv/
+
+# ignore all .pyc files
+
+*.pyc
