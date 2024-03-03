@@ -32,12 +32,13 @@ def healthcheck():
 @app.route('/create_rfm', methods=['POST'])
 def entrypoint():
     try:
+        print("begin")
         user_selection = request.json['option']
 
         # if redis cache is enabled and user_selection is in cache
         if r.get(user_selection):
             return r.get(user_selection)
-
+        print("here")
         df_rfm = create_rfm(user_selection, dataset)
 
         clusters = run_kmeans(df_rfm)
