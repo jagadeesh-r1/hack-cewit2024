@@ -13,7 +13,7 @@ apt-get install python3 python3-pip nginx libpq-dev libsm6
 
 pip3 install virtualenv
 
-virtualenv ../venv
+virtualenv /home/ubuntu/hack-cewit2024/venv
 
 rm -rf /etc/systemd/system/segmentation.service
 
