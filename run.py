@@ -74,16 +74,19 @@ def sales_prediction():
 @app.route('/similar_products', methods=['POST'])
 def similar_products():
     try:
-        sku = request.json.get('sku', None)
-        if r.get(sku):
-            return r.get(sku)
-        response = return_similar_products(sku)
+        # print(request.json)
+        product_name = request.json.get('product', None)
+        # if r.get(sku):
+        #     return r.get(sku)
+        # print(product_name)
+        response = return_similar_products(product_name)
 
-        r.set(sku, response, ex=60*60*24*7)
+        r.set(product_name, response, ex=60*60*24*7)
         return response
     except Exception as e:
         print(e)
         return str(e)
+
     
 @app.route('/generate_text', methods=['POST'])
 def generate_text():
@@ -93,7 +96,8 @@ def generate_text():
         #     return r.get(text)
         response = generate_text_gemma(text)
         r.set(text, response, ex=60*60*24*7)
-        return response
+
+        return {"text":response}
     except Exception as e:
         print(e)
         return str(e)

@@ -27,14 +27,16 @@ sku_to_name = product_data.set_index('sku')['Product Name'].to_dict()
 # print(sku_to_name)
 
 
-def return_similar_products(sku):
-    """Returns a list of similar products based on the input sku."""
+def return_similar_products(product_name):
+    """Returns a list of similar products based on the input product_name."""
     try:
         # product_data = pd.read_csv('dataset/clean_products.csv')
         # product_data['top_similar_products'] = product_data['top_similar_products'].apply(lambda x: ast.literal_eval(x))
         # product_data['top_similar_products'] = product_data['top_similar_products'].apply(lambda x: ast.literal_eval(x) if isinstance(x, str) else x)
         
         # sku_to_name = product_data.set_index('sku')['Product Name'].to_dict()
+        sku = product_data[product_data['Product Name'] == product_name]['sku'].values[0]
+        print(sku)
 
         similar_skus = product_data[product_data['sku'] == sku]['top_similar_products'].values[0]
         similar_products = []
