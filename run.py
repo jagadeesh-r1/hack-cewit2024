@@ -8,13 +8,14 @@ from analytics.timeseries import predict_sales
 from flask_cors import CORS
 import redis
 from waitress import serve
+import os
 
 
 r = redis.Redis(
   host='redis-11644.c309.us-east-2-1.ec2.cloud.redislabs.com',
   port=11644,
-  password='ofKt2m8tjJu9TFKNVo2Oe4MAIAh57HGz')
-
+  password=os.environ.get('REDIS_PASSWORD')
+)
 
 app = Flask(__name__)
 CORS(app)
@@ -42,7 +43,7 @@ def entrypoint():
         clusters = run_kmeans(df_rfm)
 
         clusters['cluster_rank'] = clusters['cluster'].map(segments)
-        
+
         fig = px.scatter(clusters, x='recency', y='frequency', color='cluster_rank', opacity=0.7, size_max=10, width=500, height=350, title='Clusters')
         response = json.dumps(fig.to_plotly_json(), default=default)
         r.set(user_selection, response, ex=60*60*24*7)
