@@ -28,7 +28,6 @@ def create_rfm(user_selection, dataset):
     dataset['sub_category'] = dataset['sub_category'].astype('category')
     
     if user_selection == 'customer_id':
-
         dataset_rfm = dataset.groupby(user_selection).agg(
             recency=('order_date', lambda x: (end_date - x.max()).days),
             frequency=('order_id', 'count'),
@@ -77,7 +76,7 @@ def create_rfm(user_selection, dataset):
             sub_category=('sub_category', 'first'),
         ).reset_index()
     elif user_selection == 'ship_mode':
-        dataset_rfm = dataset.groupby(user_selection).agg(
+        dataset_rfm = dataset.groupby(user_selection, observed=True).agg(
             recency=('order_date', lambda x: (end_date - x.max()).days),
             frequency=('order_id', 'count'),
             monetary=('sales', 'sum'),
@@ -112,6 +111,7 @@ def create_rfm(user_selection, dataset):
             ship_mode=('ship_mode', 'first'),
             category=('category', 'first'),
         ).reset_index()
+    # print(dataset_rfm)
     return dataset_rfm
 
 def create_df_rfm_graphs(user_selection, dataset):
@@ -151,8 +151,10 @@ def find_best_k(dataframe, increment=0, decrement=0):
     norm = preprocess(dataframe)
     
     sse = {}
-    
-    for k in range(1, 21):
+    # _k = min of 21 or norm.shape[0]+1
+    _k = min(21, norm.shape[0]+1)
+    for k in range(1, _k):
+        # print("Current k: ", k)
         kmeans = KMeans(n_clusters=k, random_state=1)
         kmeans.fit(norm)
         sse[k] = kmeans.inertia_
@@ -163,7 +165,11 @@ def find_best_k(dataframe, increment=0, decrement=0):
                  curve='convex', 
                  direction='decreasing'
                  )
-    k = kn.knee + increment - decrement
+    if kn.knee is not None:
+        k = kn.knee + increment - decrement
+    else:
+        # handle the case where no knee was found
+        k = 2
     return k
 
 def run_kmeans(df, increment=0, decrement=0):
@@ -172,7 +178,7 @@ def run_kmeans(df, increment=0, decrement=0):
     """
     
     norm = preprocess(df)
-    print(norm)
+    # print(norm)
     k = find_best_k(df, increment, decrement)
     kmeans = KMeans(n_clusters=k, 
                     random_state=1)

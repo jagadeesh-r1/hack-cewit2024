@@ -11,22 +11,31 @@ geo_data = {}
 
 for ind in data.index:
     try:
-        temp_month = datetime.strptime(data['Order Date'][ind], '%m/%d/%y').month
+        temp_date = datetime.strptime(data['Order Date'][ind], '%m/%d/%y')
     except ValueError:
-        temp_month = datetime.strptime(data['Order Date'][ind], '%Y-%m-%d').month
+        temp_date = datetime.strptime(data['Order Date'][ind], '%Y-%m-%d')
+    temp_month = temp_date.month
+    temp_year = temp_date.year
+    temp_day = temp_date.day
     if geo_data.get(data['State'][ind]):
         if geo_data[data['State'][ind]].get(data['City'][ind]):
-            if geo_data[data['State'][ind]][data['City'][ind]].get(temp_month):
-                if geo_data[data['State'][ind]][data['City'][ind]][temp_month].get(data['Category'][ind]):
-                    geo_data[data['State'][ind]][data['City'][ind]][temp_month][data['Category'][ind]] += 1
+            if geo_data[data['State'][ind]][data['City'][ind]].get(temp_year):
+                if geo_data[data['State'][ind]][data['City'][ind]][temp_year].get(temp_month):
+                    if geo_data[data['State'][ind]][data['City'][ind]][temp_year][temp_month].get(temp_day):
+                        if geo_data[data['State'][ind]][data['City'][ind]][temp_year][temp_month][temp_day].get(data['Category'][ind]):
+                            geo_data[data['State'][ind]][data['City'][ind]][temp_year][temp_month][temp_day][data['Category'][ind]] += 1
+                        else:
+                            geo_data[data['State'][ind]][data['City'][ind]][temp_year][temp_month][temp_day][data['Category'][ind]] = 1
+                    else:
+                        geo_data[data['State'][ind]][data['City'][ind]][temp_year][temp_month][temp_day] = {data['Category'][ind]: 1}
                 else:
-                    geo_data[data['State'][ind]][data['City'][ind]][temp_month][data['Category'][ind]] = 1
+                    geo_data[data['State'][ind]][data['City'][ind]][temp_year][temp_month] = {temp_day: {data['Category'][ind]: 1}}
             else:
-                geo_data[data['State'][ind]][data['City'][ind]][temp_month] = {data['Category'][ind]: 1}
+                geo_data[data['State'][ind]][data['City'][ind]][temp_year] = {temp_month: {temp_day: {data['Category'][ind]: 1}}}
         else:
-            geo_data[data['State'][ind]][data['City'][ind]] = {temp_month: {data['Category'][ind]: 1}}
+            geo_data[data['State'][ind]][data['City'][ind]] = {temp_year: {temp_month: {temp_day: {data['Category'][ind]: 1}}}}
     else:
-        geo_data[data['State'][ind]] = {data['City'][ind]: {temp_month: {data['Category'][ind]: 1}}}
+        geo_data[data['State'][ind]] = {data['City'][ind]: {temp_year: {temp_month: {temp_day: {data['Category'][ind]: 1}}}}}
 
 # print(geo_data)
         
