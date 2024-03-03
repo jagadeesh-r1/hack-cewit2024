@@ -1,4 +1,4 @@
-dataset/
+dataset/*.txt
 venv/
 
 # ignore all .pyc files
