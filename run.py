@@ -5,6 +5,8 @@ import numpy as np
 import plotly.express as px
 from analytics.k_means import create_rfm, run_kmeans, dataset, segments
 from analytics.timeseries import predict_sales
+from analytics.similar_product_prediction import return_similar_products
+from analytics.gemma import generate_text_gemma
 from flask_cors import CORS
 import redis
 from waitress import serve
@@ -64,6 +66,33 @@ def sales_prediction():
         
         response = predict_sales(period, category, state)
         r.set(f'{period}_{category}_{state}', response, ex=60*60*24*7)
+        return response
+    except Exception as e:
+        print(e)
+        return str(e)
+    
+@app.route('/similar_products', methods=['POST'])
+def similar_products():
+    try:
+        sku = request.json.get('sku', None)
+        if r.get(sku):
+            return r.get(sku)
+        response = return_similar_products(sku)
+
+        r.set(sku, response, ex=60*60*24*7)
+        return response
+    except Exception as e:
+        print(e)
+        return str(e)
+    
+@app.route('/generate_text', methods=['POST'])
+def generate_text():
+    try:
+        text = request.json.get('text', None)
+        # if r.get(text):
+        #     return r.get(text)
+        response = generate_text_gemma(text)
+        r.set(text, response, ex=60*60*24*7)
         return response
     except Exception as e:
         print(e)

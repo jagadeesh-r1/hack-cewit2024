@@ -1,11 +1,14 @@
-# from transformers import AutoTokenizer, AutoModelForCausalLM
-# import torch
+from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 
-# tokenizer = AutoTokenizer.from_pretrained("google/gemma-2b")
-# model = AutoModelForCausalLM.from_pretrained("google/gemma-2b", device_map="auto", torch_dtype=torch.float32)
+quantization_config = BitsAndBytesConfig(load_in_4bit=True)
 
-# input_text = "Suppose you are walking on a beach and you see a turtle. What do you do next?"
-# input_ids = tokenizer(input_text, return_tensors="pt").to("cuda")
+tokenizer = AutoTokenizer.from_pretrained("google/gemma-2b")
+model4bit = AutoModelForCausalLM.from_pretrained("google/gemma-2b", quantization_config=quantization_config)
 
-# outputs = model.generate(**input_ids, max_new_tokens=100)
-# print(tokenizer.decode(outputs[0]))
+def generate_text_gemma(prompt):
+    prefix = "The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly. Limit the conversation to 100 characters. "
+    
+    input_ids = tokenizer(prefix + prompt, return_tensors="pt").to("cuda")
+
+    outputs = model4bit.generate(**input_ids, max_new_tokens=100)
+    return tokenizer.decode(outputs[0], skip_special_tokens=True).replace(prefix, "").replace(prompt, "").replace("<bos>", "").replace("<eos>","").replace("\n","").replace("Answer:", "").strip()
