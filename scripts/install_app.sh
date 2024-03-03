@@ -19,29 +19,29 @@ rm -rf /etc/systemd/system/segmentation.service
 
 rm -rf /etc/nginx/sites-available/default
 
-cat >> /etc/nginx/sites-available/default <<EOT
-server {
-    gzip on;
-    gzip_types application/json;
-    gzip_min_length 1000;
-    gzip_proxied no-cache no-store private expired auth;
-    gunzip on;
-    listen 80;
-    location / {
-        include proxy_params;
-        proxy_pass http://127.0.0.1:5000;
-        proxy_connect_timeout   3800;
-        proxy_send_timeout      3800;
-        proxy_read_timeout      3800;
+# cat >> /etc/nginx/sites-available/default <<EOT
+# server {
+#     gzip on;
+#     gzip_types application/json;
+#     gzip_min_length 1000;
+#     gzip_proxied no-cache no-store private expired auth;
+#     gunzip on;
+#     listen 80;
+#     location / {
+#         include proxy_params;
+#         proxy_pass http://127.0.0.1:5000;
+#         proxy_connect_timeout   3800;
+#         proxy_send_timeout      3800;
+#         proxy_read_timeout      3800;
 
-    }
-    location ^~ /health-check {
-       access_log off;
-       return 200;
-       add_header Content-Type text/plain;
-    }
-}
-EOT
+#     }
+#     location ^~ /health-check {
+#        access_log off;
+#        return 200;
+#        add_header Content-Type text/plain;
+#     }
+# }
+# EOT
 
 cat >> /etc/systemd/system/segmentation.service <<EOT
 [Unit]
