@@ -17,7 +17,7 @@ virtualenv /home/ubuntu/hack-cewit2024/venv
 
 rm -rf /etc/systemd/system/segmentation.service
 
-rm -rf /etc/nginx/sites-available/default
+# rm -rf /etc/nginx/sites-available/default
 
 # cat >> /etc/nginx/sites-available/default <<EOT
 # server {
