@@ -22,7 +22,7 @@ fsspec==2024.2.0
 gensim==4.3.2
 gevent==24.2.1
 greenlet==3.0.3
-gunicorn==21.2.0
+gunicorn==22.0.0
 holidays==0.43
 huggingface-hub==0.21.3
 idna==3.6
